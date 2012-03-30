@@ -81,10 +81,20 @@ static int gridfs_find_file(lua_State *L) {
                 BSONObj obj;
                 lua_to_bson(L, 2, obj);
                 GridFile gridfile = gridfs->findFile(obj);
-                resultcount = gridfile_create(L, gridfile);
+                if(gridfile.exists()) {
+                    resultcount = gridfile_create(L, gridfile);
+                } else {
+                    lua_pushnil(L);
+                    resultcount = 1;
+                }
             } else {
                 GridFile gridfile = gridfs->findFile(luaL_checkstring(L, 2));
-                resultcount = gridfile_create(L, gridfile);
+                if(gridfile.exists()) {
+                    resultcount = gridfile_create(L, gridfile);
+                } else {
+                    lua_pushnil(L);
+                    resultcount = 1;
+                }
             }
 
         } catch (std::exception &e) {
