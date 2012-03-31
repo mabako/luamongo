@@ -270,6 +270,10 @@ void push_bsontype_table(lua_State* L, mongo::BSONType bsontype) {
     }
     lua_settable(L, -3);
 
+    lua_pushstring(L, "__metatable");
+    lua_pushboolean(L, true);
+    lua_settable(L, -3);
+
     lua_setmetatable(L, -2);
 }
 
