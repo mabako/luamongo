@@ -27,6 +27,16 @@ static int bson_type_Date(lua_State *L) {
     return 1;
 }
 
+static int bson_type_DateNow(lua_State *L) {
+    lua_Number now = (lua_Number)mongo::curTimeMillis64();
+    if(lua_gettop(L) > 0)
+        now += lua_tointeger(L, 1);
+    push_bsontype_table(L, mongo::Date);
+    lua_pushnumber(L, now);
+    lua_rawseti(L, -2, 1); // t[1] = function arg #1
+    return 1;
+}
+
 static int bson_type_Timestamp(lua_State*L) {
     push_bsontype_table(L, mongo::Timestamp);
     lua_pushvalue(L, 1);
@@ -364,6 +374,7 @@ static int bson_fromjson(lua_State *L) {
 int mongo_bsontypes_register(lua_State *L) {
     static const luaL_Reg bsontype_methods[] = {
         {"Date", bson_type_Date},
+        {"DateNow", bson_type_DateNow},
         {"Timestamp", bson_type_Timestamp},
         {"RegEx", bson_type_RegEx},
         {"NumberInt", bson_type_NumberInt},
